@@ -21,6 +21,16 @@ use App\Http\Controllers\AdminChurchController;
 Route::get('/', [ActivityController::class, 'publicIndex'])->name('welcome');
 Route::get('/home', fn() => redirect()->route('dashboard'))->name('home');
 
+Route::get('/debug-proxy', function () {
+    return [
+        'isSecure' => request()->isSecure(),
+        'clientIp' => request()->getClientIp(),
+        'x-forwarded-proto' => request()->header('X-Forwarded-Proto'),
+        'scheme' => request()->getScheme(),
+        'url' => url('/'),
+    ];
+});
+
 // Navbar Public Links
 Route::get('/activities', [ActivityController::class, 'publicIndex'])->name('activities.index');
 Route::get('/programs', [SocialProgramController::class, 'publicIndex'])->name('programs.public');
