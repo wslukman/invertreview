@@ -339,6 +339,23 @@
             </div>
         </section>
 
+        <!-- Cross Promo Buku Kehidupan -->
+        <section class="buku-kehidupan-promo py-5" style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); border-top: 1px solid #e9ecef; border-bottom: 1px solid #e9ecef;">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8 text-center text-lg-start mb-4 mb-lg-0">
+                        <h3 class="fw-bold" style="color: #2c3e50;"><i class="fas fa-book-open" style="color: #667eea;"></i> Abadikan Perjalanan Hidup Anda</h3>
+                        <p class="lead mb-0 text-muted">Ingin mengabadikan kisah kesaksian, perjalanan rohani, atau biografi tokoh gereja? Gunakan <strong>Buku Kehidupan</strong>, platform gratis kami untuk menulis perjalanan hidup yang menginspirasi.</p>
+                    </div>
+                    <div class="col-lg-4 text-center text-lg-end">
+                        <a href="https://buku.invertreview.com" target="_blank" class="btn btn-lg btn-primary shadow-sm" style="background-color: #667eea; border: none; border-radius: 50px; padding: 12px 30px;">
+                            <i class="fas fa-pencil-alt"></i> Tulis Biografi Sekarang
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Process Section -->
         <section class="process">
             <div class="container">
@@ -523,6 +540,7 @@
                             <li><a href="/" class="text-white-50 text-decoration-none">Beranda</a></li>
                             <li><a href="#features" class="text-white-50 text-decoration-none">Fitur</a></li>
                             <li><a href="#faq" class="text-white-50 text-decoration-none">FAQ</a></li>
+                            <li class="mt-2"><a href="https://buku.invertreview.com" target="_blank" class="text-warning text-decoration-none"><i class="fas fa-book-open"></i> Buku Kehidupan</a></li>
                         </ul>
                     </div>
                     <div class="col-md-4 mb-4">

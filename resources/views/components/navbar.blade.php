@@ -17,6 +17,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('programs.public') }}">Program Sosial</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link text-warning fw-bold" href="https://buku.invertreview.com" target="_blank">
+                        <i class="fas fa-book-open"></i> Buku Kehidupan
+                    </a>
+                </li>
 
                 @auth
                     <li class="nav-item dropdown">

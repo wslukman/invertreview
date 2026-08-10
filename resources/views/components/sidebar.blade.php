@@ -56,6 +56,9 @@
                 <a class="nav-link" href="{{ route('programs.public') }}">
                     <i class="fas fa-handshake"></i> Program Publik
                 </a>
+                <a class="nav-link text-primary" href="https://buku.invertreview.com" target="_blank">
+                    <i class="fas fa-book-open"></i> Tulis Biografi
+                </a>
             </nav>
         @endif
 
@@ -84,6 +87,9 @@
                 </a>
                 <a class="nav-link" href="{{ route('programs.public') }}">
                     <i class="fas fa-handshake"></i> Program Sosial
+                </a>
+                <a class="nav-link text-primary" href="https://buku.invertreview.com" target="_blank">
+                    <i class="fas fa-book-open"></i> Tulis Biografi
                 </a>
             </nav>
         @endif
