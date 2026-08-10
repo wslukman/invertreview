@@ -16,7 +16,7 @@ export async function POST(req) {
 
     // Cari user di database
     const userResult = await query(
-      'SELECT id, email, password_hash, full_name, role FROM users WHERE email = $1',
+      'SELECT id, email, password_hash, full_name, role FROM users WHERE email = ?',
       [email.toLowerCase()]
     );
 

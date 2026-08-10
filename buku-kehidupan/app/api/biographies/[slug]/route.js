@@ -13,7 +13,7 @@ export async function GET(req, { params }) {
       `SELECT b.*, u.full_name as author_name, u.email as author_email
        FROM biographies b
        JOIN users u ON b.user_id = u.id
-       WHERE b.slug = $1`,
+       WHERE b.slug = ?`,
       [slug]
     );
 
@@ -34,7 +34,7 @@ export async function GET(req, { params }) {
     // Ambil data life events (milestones) terurut
     const eventsResult = await query(
       `SELECT * FROM life_events 
-       WHERE biography_id = $1 
+       WHERE biography_id = ? 
        ORDER BY order_index ASC, event_year ASC`,
       [biography.id]
     );
@@ -54,8 +54,8 @@ export async function PUT(req, { params }) {
   const resolvedParams = await params;
   const { slug } = resolvedParams;
 
-  // Koneksi client pool untuk penanganan transaksi (Transaction)
-  const client = await pool.connect();
+  // Dapatkan koneksi dari pool untuk menangani transaksi MySQL
+  const connection = await pool.getConnection();
 
   try {
     const user = await getAuthUser(req);
@@ -64,7 +64,7 @@ export async function PUT(req, { params }) {
     }
 
     // Ambil biografi lama untuk cek hak kepemilikan
-    const bioCheck = await query('SELECT id, user_id FROM biographies WHERE slug = $1', [slug]);
+    const bioCheck = await query('SELECT id, user_id FROM biographies WHERE slug = ?', [slug]);
     if (bioCheck.rows.length === 0) {
       return NextResponse.json({ error: 'Biografi tidak ditemukan.' }, { status: 404 });
     }
@@ -83,35 +83,28 @@ export async function PUT(req, { params }) {
     }
 
     // Jalankan TRANSAKSI SQL
-    await client.query('BEGIN');
+    await connection.beginTransaction();
 
     // 1. Update Biografi
-    const updateBioSql = `
-      UPDATE biographies 
-      SET title = $1, summary = $2, content_markdown = $3, is_published = $4, updated_at = CURRENT_TIMESTAMP
-      WHERE id = $5
-      RETURNING *
-    `;
-    const updatedBioResult = await client.query(updateBioSql, [
-      title,
-      summary,
-      contentMarkdown,
-      isPublished,
-      oldBio.id,
-    ]);
+    await connection.query(
+      `UPDATE biographies 
+       SET title = ?, summary = ?, content_markdown = ?, is_published = ?, updated_at = CURRENT_TIMESTAMP
+       WHERE id = ?`,
+      [title, summary, contentMarkdown, isPublished ? 1 : 0, oldBio.id]
+    );
 
     // 2. Hapus semua milestone lama
-    await client.query('DELETE FROM life_events WHERE biography_id = $1', [oldBio.id]);
+    await connection.query('DELETE FROM life_events WHERE biography_id = ?', [oldBio.id]);
 
     // 3. Masukkan milestone baru
     if (lifeEvents && lifeEvents.length > 0) {
       const insertEventSql = `
         INSERT INTO life_events (biography_id, event_year, event_title, description, order_index)
-        VALUES ($1, $2, $3, $4, $5)
+        VALUES (?, ?, ?, ?, ?)
       `;
       for (let i = 0; i < lifeEvents.length; i++) {
         const ev = lifeEvents[i];
-        await client.query(insertEventSql, [
+        await connection.query(insertEventSql, [
           oldBio.id,
           parseInt(ev.event_year) || 0,
           ev.event_title || '',
@@ -122,11 +115,15 @@ export async function PUT(req, { params }) {
     }
 
     // Commit transaksi jika sukses semua
-    await client.query('COMMIT');
+    await connection.commit();
 
-    // Ambil data events yang baru saja dimasukkan
+    // Ambil data biografi dan events yang sudah diperbarui
+    const updatedBioResult = await query(
+      'SELECT * FROM biographies WHERE id = ?',
+      [oldBio.id]
+    );
     const finalEvents = await query(
-      'SELECT * FROM life_events WHERE biography_id = $1 ORDER BY order_index ASC, event_year ASC',
+      'SELECT * FROM life_events WHERE biography_id = ? ORDER BY order_index ASC, event_year ASC',
       [oldBio.id]
     );
 
@@ -137,12 +134,12 @@ export async function PUT(req, { params }) {
     });
   } catch (error) {
     // Rollback transaksi jika terjadi error
-    await client.query('ROLLBACK');
+    await connection.rollback();
     console.error('Update Biography API Error:', error);
     return NextResponse.json({ error: 'Gagal memperbarui biografi (Kesalahan Database).' }, { status: 500 });
   } finally {
-    // Selalu rilis client kembali ke pool
-    client.release();
+    // Selalu rilis koneksi kembali ke pool
+    connection.release();
   }
 }
 
@@ -158,7 +155,7 @@ export async function DELETE(req, { params }) {
     }
 
     // Cek kepemilikan
-    const bioCheck = await query('SELECT id, user_id FROM biographies WHERE slug = $1', [slug]);
+    const bioCheck = await query('SELECT id, user_id FROM biographies WHERE slug = ?', [slug]);
     if (bioCheck.rows.length === 0) {
       return NextResponse.json({ error: 'Biografi tidak ditemukan.' }, { status: 404 });
     }
@@ -170,7 +167,7 @@ export async function DELETE(req, { params }) {
       return NextResponse.json({ error: 'Akses ditolak.' }, { status: 403 });
     }
 
-    await query('DELETE FROM biographies WHERE id = $1', [bio.id]);
+    await query('DELETE FROM biographies WHERE id = ?', [bio.id]);
 
     return NextResponse.json({ message: 'Biografi berhasil dihapus.' });
   } catch (error) {

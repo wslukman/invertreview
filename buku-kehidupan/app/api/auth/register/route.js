@@ -22,7 +22,7 @@ export async function POST(req) {
     }
 
     // Periksa apakah email sudah terdaftar
-    const existingUser = await query('SELECT id FROM users WHERE email = $1', [email.toLowerCase()]);
+    const existingUser = await query('SELECT id FROM users WHERE email = ?', [email.toLowerCase()]);
     if (existingUser.rows.length > 0) {
       return NextResponse.json(
         { error: 'Email ini sudah terdaftar.' },
@@ -34,22 +34,32 @@ export async function POST(req) {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
+    // Generate UUID di sisi JavaScript (kompatibel semua versi MySQL)
+    const newId = crypto.randomUUID();
+
     // Simpan ke database
-    const newUser = await query(
-      `INSERT INTO users (email, password_hash, full_name, role)
-       VALUES ($1, $2, $3, $4)
-       RETURNING id, email, full_name, role, created_at`,
-      [email.toLowerCase(), passwordHash, fullName, 'user']
+    await query(
+      `INSERT INTO users (id, email, password_hash, full_name, role)
+       VALUES (?, ?, ?, ?, ?)`,
+      [newId, email.toLowerCase(), passwordHash, fullName, 'user']
     );
+
+    // Ambil data user yang baru dibuat
+    const newUserResult = await query(
+      'SELECT id, email, full_name, role, created_at FROM users WHERE id = ?',
+      [newId]
+    );
+
+    const newUser = newUserResult.rows[0];
 
     return NextResponse.json(
       {
         message: 'Registrasi berhasil!',
         user: {
-          id: newUser.rows[0].id,
-          email: newUser.rows[0].email,
-          fullName: newUser.rows[0].full_name,
-          role: newUser.rows[0].role,
+          id: newUser.id,
+          email: newUser.email,
+          fullName: newUser.full_name,
+          role: newUser.role,
         },
       },
       { status: 201 }

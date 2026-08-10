@@ -12,13 +12,14 @@ export async function GET(req) {
       SELECT b.id, b.slug, b.title, b.summary, b.created_at, u.full_name as author_name 
       FROM biographies b
       JOIN users u ON b.user_id = u.id
-      WHERE b.is_published = true
+      WHERE b.is_published = 1
     `;
     const params = [];
 
     if (search) {
-      sql += ` AND (b.title ILIKE $1 OR b.summary ILIKE $1 OR u.full_name ILIKE $1)`;
-      params.push(`%${search}%`);
+      // MySQL LIKE sudah case-insensitive secara default (menggantikan PostgreSQL ILIKE)
+      sql += ` AND (b.title LIKE ? OR b.summary LIKE ? OR u.full_name LIKE ?)`;
+      params.push(`%${search}%`, `%${search}%`, `%${search}%`);
     }
 
     sql += ` ORDER BY b.created_at DESC LIMIT 20`;
@@ -60,8 +61,7 @@ export async function POST(req) {
     }
 
     // --- ATURAN EMAS: 1 Akun = 1 Biografi ---
-    // Cek apakah user_id sudah ada di database biographies
-    const checkUserBio = await query('SELECT id FROM biographies WHERE user_id = $1', [user.id]);
+    const checkUserBio = await query('SELECT id FROM biographies WHERE user_id = ?', [user.id]);
     if (checkUserBio.rows.length > 0) {
       return NextResponse.json(
         { error: 'Anda sudah memiliki 1 data biografi. Sistem melarang kepemilikan lebih dari 1 biografi.' },
@@ -70,7 +70,7 @@ export async function POST(req) {
     }
 
     // Cek keunikan slug di database
-    const checkSlug = await query('SELECT id FROM biographies WHERE slug = $1', [formattedSlug]);
+    const checkSlug = await query('SELECT id FROM biographies WHERE slug = ?', [formattedSlug]);
     if (checkSlug.rows.length > 0) {
       return NextResponse.json(
         { error: 'Slug ini sudah digunakan oleh biografi lain. Silakan cari slug yang berbeda.' },
@@ -78,18 +78,27 @@ export async function POST(req) {
       );
     }
 
+    // Generate UUID di sisi JavaScript (kompatibel semua versi MySQL)
+    const newId = crypto.randomUUID();
+    const isPublishedValue = isPublished ? 1 : 0;
+
     // Simpan biografi baru
-    const result = await query(
-      `INSERT INTO biographies (user_id, slug, title, summary, content_markdown, is_published)
-       VALUES ($1, $2, $3, $4, $5, $6)
-       RETURNING id, slug, title, summary, is_published, created_at`,
-      [user.id, formattedSlug, title, summary, contentMarkdown, isPublished]
+    await query(
+      `INSERT INTO biographies (id, user_id, slug, title, summary, content_markdown, is_published)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [newId, user.id, formattedSlug, title, summary, contentMarkdown, isPublishedValue]
+    );
+
+    // Ambil data biografi yang baru dibuat
+    const newBioResult = await query(
+      'SELECT id, slug, title, summary, is_published, created_at FROM biographies WHERE id = ?',
+      [newId]
     );
 
     return NextResponse.json(
       {
         message: 'Biografi berhasil dibuat!',
-        biography: result.rows[0],
+        biography: newBioResult.rows[0],
       },
       { status: 201 }
     );

@@ -11,7 +11,7 @@ export async function GET(req) {
 
     // Ambil data terbaru dari DB
     const userResult = await query(
-      'SELECT id, email, full_name, role, created_at FROM users WHERE id = $1',
+      'SELECT id, email, full_name, role, created_at FROM users WHERE id = ?',
       [userPayload.id]
     );
 
@@ -23,7 +23,7 @@ export async function GET(req) {
 
     // Cek apakah user sudah punya biografi
     const bioResult = await query(
-      'SELECT id, slug, title FROM biographies WHERE user_id = $1',
+      'SELECT id, slug, title FROM biographies WHERE user_id = ?',
       [user.id]
     );
 
