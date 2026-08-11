@@ -2,6 +2,12 @@
 
 @section('title', 'Daftar Gereja Baru')
 
+@section('css')
+<style>
+    #map-picker { height: 350px; width: 100%; border-radius: 8px; margin-bottom: 15px; border: 1px solid #ced4da; }
+</style>
+@endsection
+
 @section('content')
 <div class="hero-section">
     <h1><i class="fas fa-church"></i> Daftarkan Gereja Anda</h1>
@@ -83,26 +89,32 @@
                             @enderror
                         </div>
 
+                        {{-- Peta Interaktif --}}
+                        <div class="mb-3">
+                            <label class="form-label">Tentukan Titik Koordinat <span class="text-danger">*</span></label>
+                            <div id="map-picker"></div>
+                            <small class="text-muted d-block mb-2">
+                                <strong>Cara penggunaan:</strong> Klik pada lokasi gereja di peta di atas. Kotak Latitude dan Longitude di bawah akan terisi otomatis. Anda juga bisa menggeser peta untuk mencari lokasi yang tepat di seluruh dunia.
+                            </small>
+                        </div>
+
                         {{-- Latitude & Longitude --}}
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="latitude" class="form-label">Latitude <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('latitude') is-invalid @enderror" id="latitude" name="latitude" value="{{ old('latitude') }}" placeholder="-2.9355" required>
+                                <label for="latitude" class="form-label">Latitude</label>
+                                <input type="text" class="form-control @error('latitude') is-invalid @enderror" id="latitude" name="latitude" value="{{ old('latitude') }}" placeholder="-2.9355" required readonly>
                                 @error('latitude')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="longitude" class="form-label">Longitude <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('longitude') is-invalid @enderror" id="longitude" name="longitude" value="{{ old('longitude') }}" placeholder="104.7438" required>
+                                <label for="longitude" class="form-label">Longitude</label>
+                                <input type="text" class="form-control @error('longitude') is-invalid @enderror" id="longitude" name="longitude" value="{{ old('longitude') }}" placeholder="104.7438" required readonly>
                                 @error('longitude')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
-                        <small class="text-muted d-block">
-                            <strong>Cara mendapatkan koordinat:</strong> Gunakan Google Maps, scroll ke lokasi gereja, klik kanan → koordinat akan ditampilkan
-                        </small>
                     </div>
 
                     {{-- Deskripsi --}}
@@ -168,4 +180,68 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('js')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Default koordinat (Pusat Peta - Dunia/Asia Tenggara)
+        let defaultLat = -0.7893;
+        let defaultLng = 113.9213;
+        let defaultZoom = 4;
+
+        // Ambil input elemen
+        const latInput = document.getElementById('latitude');
+        const lngInput = document.getElementById('longitude');
+
+        if (latInput.value && lngInput.value) {
+            defaultLat = parseFloat(latInput.value);
+            defaultLng = parseFloat(lngInput.value);
+            defaultZoom = 13;
+        }
+
+        // Inisialisasi peta
+        const map = L.map('map-picker').setView([defaultLat, defaultLng], defaultZoom);
+
+        // Tambahkan layer peta (OpenStreetMap)
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        let marker = null;
+
+        // Jika sudah ada isian (misal gagal validasi form)
+        if (latInput.value && lngInput.value) {
+            marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(map);
+            
+            marker.on('dragend', function(e) {
+                const position = marker.getLatLng();
+                latInput.value = position.lat.toFixed(6);
+                lngInput.value = position.lng.toFixed(6);
+            });
+        }
+
+        // Event saat peta diklik
+        map.on('click', function(e) {
+            const lat = e.latlng.lat;
+            const lng = e.latlng.lng;
+
+            // Update input text
+            latInput.value = lat.toFixed(6);
+            lngInput.value = lng.toFixed(6);
+
+            if (marker === null) {
+                marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+                
+                marker.on('dragend', function(event) {
+                    const position = marker.getLatLng();
+                    latInput.value = position.lat.toFixed(6);
+                    lngInput.value = position.lng.toFixed(6);
+                });
+            } else {
+                marker.setLatLng(e.latlng);
+            }
+        });
+    });
+</script>
 @endsection
