@@ -10,6 +10,7 @@ use App\Http\Controllers\SocialProgramController;
 use App\Http\Controllers\ProgramRegistrationController;
 use App\Http\Controllers\Auth\RegisterChurchController;
 use App\Http\Controllers\AdminChurchController;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +19,7 @@ use App\Http\Controllers\AdminChurchController;
 */
 
 // --- 1. GUEST / PUBLIC ROUTES ---
-Route::get('/', [ActivityController::class, 'publicIndex'])->name('welcome');
+Route::get('/', [HomeController::class, 'index'])->name('welcome');
 Route::get('/home', fn() => redirect()->route('dashboard'))->name('home');
 
 Route::get('/debug-proxy', function () {
