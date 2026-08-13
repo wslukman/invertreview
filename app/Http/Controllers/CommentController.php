@@ -8,7 +8,32 @@ use Illuminate\Support\Facades\Gate; // Import Gate untuk otorisasi
 
 class CommentController extends Controller
 {
-    // ... method store() Anda yang sudah ada ...
+    /**
+     * Menyimpan komentar baru.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'activity_id' => 'required|exists:activities,id',
+            'content' => 'required|string|max:1000',
+        ]);
+
+        $comment = new Comment();
+        $comment->activity_id = $validated['activity_id'];
+        $comment->content = $validated['content'];
+        $comment->is_approved = true; // Auto-approve untuk sekarang
+
+        if (auth()->check()) {
+            $comment->user_id = auth()->id();
+        } else {
+            // Jika fitur komentar guest diaktifkan di kemudian hari
+            $comment->guest_name = 'Guest';
+        }
+
+        $comment->save();
+
+        return back()->with('success', 'Komentar berhasil dikirim.');
+    }
 
     /**
      * Menghapus komentar dari database.
