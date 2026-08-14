@@ -102,7 +102,7 @@
                         </a>
                     </div>
                     <div class="col-md-3 col-sm-6">
-                        <a href="{{ route('programs.registrations') }}" class="btn btn-info btn-block w-100">
+                        <a href="{{ route('programs.index') }}" class="btn btn-info btn-block w-100">
                             <i class="fas fa-list"></i> Registrasi Program
                         </a>
                     </div>
