@@ -273,7 +273,7 @@
                                             {{ ucfirst($registration->program->type) }}
                                         </span>
                                     </td>
-                                    <td>{{ $registration->program->activity_date->format('d M Y') }}</td>
+                                    <td>{{ $registration->program->start_date ? $registration->program->start_date->format('d M Y') : '-' }}</td>
                                     <td>
                                         @if($registration->status === 'registered')
                                             <span class="badge bg-success">Terdaftar</span>
@@ -288,7 +288,7 @@
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         @if($registration->status === 'registered')
-                                            <form action="{{ route('registrations.destroy', $registration) }}" method="POST" class="d-inline">
+                                            <form action="{{ route('programs.registrations.destroy', $registration) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Batalkan pendaftaran?')">
