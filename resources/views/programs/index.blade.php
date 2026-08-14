@@ -98,7 +98,7 @@
                         <div class="row mb-3 small">
                             <div class="col-6">
                                 <p class="mb-1"><i class="fas fa-calendar text-primary"></i> <strong>Tanggal</strong></p>
-                                <p>{{ $program->activity_date->format('d M Y') }}</p>
+                                <p>{{ $program->start_date ? $program->start_date->format('d M Y') : '-' }}</p>
                             </div>
                             <div class="col-6">
                                 <p class="mb-1"><i class="fas fa-tag text-info"></i> <strong>Tipe</strong></p>

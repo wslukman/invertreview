@@ -66,6 +66,8 @@ class SocialProgramController extends Controller
         $stats = [
             'active_programs' => (clone $query)->where('status', 'active')->count(),
             'draft_programs' => (clone $query)->where('status', 'draft')->count(),
+            'total_registrations' => (clone $query)->sum('registered_count'),
+            'total_participants' => (clone $query)->sum('capacity'),
         ];
 
         return view('programs.index', compact('programs', 'stats'));
