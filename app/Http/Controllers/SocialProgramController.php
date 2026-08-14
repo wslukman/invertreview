@@ -63,7 +63,12 @@ class SocialProgramController extends Controller
             ->latest()
             ->paginate(15);
 
-        return view('programs.index', compact('programs'));
+        $stats = [
+            'active_programs' => (clone $query)->where('status', 'active')->count(),
+            'draft_programs' => (clone $query)->where('status', 'draft')->count(),
+        ];
+
+        return view('programs.index', compact('programs', 'stats'));
     }
 
     /**
