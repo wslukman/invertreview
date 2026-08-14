@@ -137,7 +137,7 @@
                 </div>
                 <div class="col-md-4 mb-4">
                     <h5>Kontak</h5>
-                    <p>Email: <a href="mailto:info@unitedchurch.local">info@unitedchurch.local</a></p>
+                    <p>Email: <a href="mailto:wslukman@gmail.com">wslukman@gmail.com</a></p>
                     <p>Lokasi: Palembang, Indonesia</p>
                 </div>
             </div>

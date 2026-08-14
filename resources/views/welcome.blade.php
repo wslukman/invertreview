@@ -545,7 +545,7 @@
                     </div>
                     <div class="col-md-4 mb-4">
                         <h5>Hubungi Kami</h5>
-                        <p class="text-white-50"><i class="fas fa-envelope"></i> info@unitedchurch.local</p>
+                        <p class="text-white-50"><i class="fas fa-envelope"></i> wslukman@gmail.com</p>
                         <p class="text-white-50"><i class="fas fa-phone"></i> +62 711-XXX-XXXX</p>
                     </div>
                 </div>
