@@ -41,6 +41,9 @@ Route::get('/churches/search', [ChurchController::class, 'index'])->name('church
 Route::get('/register-church', [RegisterChurchController::class, 'showForm'])->name('register.church');
 Route::post('/register-church', [RegisterChurchController::class, 'store'])->name('register.church.store');
 
+// Public Program Registration
+Route::post('/programs/{program}/register', [ProgramRegistrationController::class, 'store'])->name('programs.register');
+
 // --- 2. AUTHENTICATED ROUTES ---
 Route::middleware(['auth', 'verified'])->group(function () {
     
@@ -61,7 +64,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
     // --- PROGRAM REGISTRATIONS (Public Action for Authenticated) ---
-    Route::post('/programs/{program}/register', [ProgramRegistrationController::class, 'store'])->name('programs.register');
     Route::delete('/registrations/{registration}', [ProgramRegistrationController::class, 'destroy'])->name('programs.registrations.destroy');
 
     // --- MANAGEMENT (Church Admin & Super Admin) ---

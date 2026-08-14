@@ -82,9 +82,18 @@
                     </div>
 
                     @if($percentage < 100)
-                        <button class="btn btn-primary btn-lg w-100 rounded-pill mb-2 shadow-sm">
-                            <i class="fas fa-edit me-2"></i> Daftar Sekarang
-                        </button>
+                        @auth
+                            <form action="{{ route('programs.register', $program) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill mb-2 shadow-sm">
+                                    <i class="fas fa-edit me-2"></i> Daftar Sekarang
+                                </button>
+                            </form>
+                        @else
+                            <button type="button" class="btn btn-primary btn-lg w-100 rounded-pill mb-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#guestRegisterModal">
+                                <i class="fas fa-edit me-2"></i> Daftar Sekarang
+                            </button>
+                        @endauth
                     @else
                         <button class="btn btn-secondary btn-lg w-100 rounded-pill mb-2" disabled>
                             Pendaftaran Ditutup
@@ -98,5 +107,44 @@
             </div>
         </div>
     </div>
+    </div>
 </div>
+
+{{-- Modal for Guest Registration --}}
+@guest
+<div class="modal fade" id="guestRegisterModal" tabindex="-1" aria-labelledby="guestRegisterModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{{ route('programs.register', $program) }}" method="POST">
+        @csrf
+        <div class="modal-header">
+            <h5 class="modal-title" id="guestRegisterModalLabel">Pendaftaran Program (Tamu)</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p class="text-muted small mb-4">Anda belum login. Silakan isi data di bawah ini untuk mendaftar sebagai tamu, atau <a href="{{ route('login') }}">login di sini</a>.</p>
+            
+            <div class="mb-3">
+                <label class="form-label fw-bold">Nama Lengkap</label>
+                <input type="text" name="guest_name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Email</label>
+                <input type="email" name="guest_email" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Nomor WhatsApp / HP</label>
+                <input type="text" name="guest_phone" class="form-control" placeholder="Contoh: 08123456789" required>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary">Konfirmasi Pendaftaran</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+@endguest
+
 @endsection

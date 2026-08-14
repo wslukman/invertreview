@@ -174,27 +174,26 @@ class SocialProgramController extends Controller
     }
 
     /**
-     * Fungsi Otorisasi Custom (Pengganti authorize() agar tidak bentrok)
+     * Fungsi Otorisasi Custom
      */
     private function authorizeAccess($permission, $program = null)
     {
         $user = auth()->user();
 
-        // 1. Super Admin (qq) punya akses penuh
+        // 1. Super Admin punya akses penuh
         if ($user->hasRole('super_admin')) {
             return true;
         }
 
-        // 2. Cek Permission Spatie
-        if (!$user->hasPermissionTo($permission)) {
-            abort(403, 'Anda tidak memiliki izin untuk akses ini.');
+        // 2. Church Admin punya akses kelola program
+        if ($user->hasRole('church_admin')) {
+            // 3. Jika mengedit data, pastikan program milik gerejanya sendiri
+            if ($program && $user->church_id !== $program->church_id) {
+                abort(403, 'Anda tidak diizinkan mengelola program gereja lain.');
+            }
+            return true;
         }
 
-        // 3. Jika mengedit data, pastikan program milik gerejanya sendiri
-        if ($program && $user->church_id !== $program->church_id) {
-            abort(403, 'Anda tidak diizinkan mengelola program gereja lain.');
-        }
-
-        return true;
+        abort(403, 'Anda tidak memiliki izin untuk akses ini.');
     }
 }
