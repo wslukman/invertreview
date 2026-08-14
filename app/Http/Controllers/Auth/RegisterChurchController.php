@@ -57,24 +57,45 @@ class RegisterChurchController extends Controller
             }
             $church->save();
 
-            // Create user admin gereja
-            $user = User::create([
-                'name' => 'Admin - ' . $validated['name'],
-                'email' => $validated['email'],
-                'password' => Hash::make(str()->random(32)),
-                'phone' => $validated['phone'],
-                'church_id' => $church->id,
-                'is_active' => false,
-            ]);
+            if (Auth::check()) {
+                $user = Auth::user();
+                $user->update([
+                    'church_id' => $church->id,
+                ]);
+            } else {
+                // Check if email already exists
+                $existingUser = User::where('email', $validated['email'])->first();
+                if ($existingUser) {
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        'email' => 'Email ini sudah terdaftar. Silakan "Masuk" (Login) ke akun Anda terlebih dahulu, kemudian lakukan Pendaftaran Gereja dari dalam dasbor.',
+                    ]);
+                }
 
-            // Update gereja dengan ID user yang baru dibuat
+                // Create user admin gereja
+                $user = User::create([
+                    'name' => 'Admin - ' . $validated['name'],
+                    'email' => $validated['email'],
+                    'password' => Hash::make(str()->random(32)),
+                    'phone' => $validated['phone'],
+                    'church_id' => $church->id,
+                    'is_active' => false,
+                ]);
+
+                // Trigger event
+                event(new Registered($user));
+            }
+
+            // Update gereja dengan ID user yang baru dibuat/disubmit
             $church->update(['submitted_by' => $user->id]);
 
             // Assign role
-            $user->assignRole('church_admin');
+            if (!$user->hasRole('church_admin')) {
+                $user->assignRole('church_admin');
+            }
 
-            // Trigger event
-            event(new Registered($user));
+            if (Auth::check()) {
+                return redirect()->route('dashboard')->with('status', 'Pendaftaran gereja berhasil disubmit! Silakan tunggu persetujuan dari Super Admin.');
+            }
 
             return redirect()->route('login')->with('status', 
                 'Pendaftaran gereja berhasil! Silakan tunggu persetujuan dari Super Admin. 
