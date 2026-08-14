@@ -53,8 +53,8 @@
             </nav>
         @endif
 
-        {{-- Member Menu --}}
-        @if(auth()->user()->hasRole('member'))
+        {{-- Member Menu (Hanya tampil jika BUKAN church_admin, agar tidak dobel) --}}
+        @if(auth()->user()->hasRole('member') && !auth()->user()->hasRole('church_admin'))
             <nav class="nav flex-column">
                 <span class="small text-muted px-3 d-block mb-2">AKTIVITAS</span>
                 <a class="nav-link {{ Route::is('activities.create') ? 'active' : '' }}" href="{{ route('activities.create') }}">
