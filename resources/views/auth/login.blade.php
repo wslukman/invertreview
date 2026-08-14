@@ -43,6 +43,19 @@
                         <div class="d-grid gap-2 mb-3">
                             <button type="submit" class="btn btn-primary btn-lg">Masuk</button>
                         </div>
+                        
+                        <div class="d-flex align-items-center my-3">
+                            <hr class="flex-grow-1">
+                            <span class="mx-3 text-muted">atau</span>
+                            <hr class="flex-grow-1">
+                        </div>
+
+                        <div class="d-grid gap-2 mb-3">
+                            <a href="{{ route('google.login') }}" class="btn btn-outline-dark btn-lg d-flex justify-content-center align-items-center">
+                                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="height: 20px;" class="me-2">
+                                Lanjutkan dengan Google
+                            </a>
+                        </div>
 
                         <!-- Links -->
                         <div class="text-center">

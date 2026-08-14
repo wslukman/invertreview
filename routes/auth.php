@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\GoogleController;
+
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
@@ -33,6 +35,12 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
                 ->name('password.store');
+
+    Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])
+                ->name('google.login');
+                
+    Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])
+                ->name('google.callback');
 });
 
 Route::middleware('auth')->group(function () {

@@ -50,6 +50,19 @@
                             <button type="submit" class="btn btn-primary btn-lg">Daftar</button>
                         </div>
 
+                        <div class="d-flex align-items-center my-3">
+                            <hr class="flex-grow-1">
+                            <span class="mx-3 text-muted">atau</span>
+                            <hr class="flex-grow-1">
+                        </div>
+
+                        <div class="d-grid gap-2 mb-3">
+                            <a href="{{ route('google.login') }}" class="btn btn-outline-dark btn-lg d-flex justify-content-center align-items-center">
+                                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="height: 20px;" class="me-2">
+                                Daftar dengan Google
+                            </a>
+                        </div>
+
                         <!-- Link -->
                         <div class="text-center">
                             <a href="{{ route('login') }}" class="text-decoration-none">Sudah punya akun? Masuk di sini</a>
