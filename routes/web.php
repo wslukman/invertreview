@@ -21,6 +21,7 @@ use App\Http\Controllers\HomeController;
 // --- 1. GUEST / PUBLIC ROUTES ---
 Route::get('/', [HomeController::class, 'index'])->name('welcome');
 Route::get('/home', fn() => redirect()->route('dashboard'))->name('home');
+Route::view('/about', 'about')->name('about');
 
 Route::get('/debug-proxy', function () {
     return [

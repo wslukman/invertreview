@@ -12,6 +12,9 @@
             <ul class="navbar-nav ms-auto">
                 {{-- Public Links --}}
                 <li class="nav-item">
+                    <a class="nav-link" href="{{ route('about') }}">Tentang Kami</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{{ route('churches.search') }}">Cari Gereja</a>
                 </li>
                 <li class="nav-item">
