@@ -137,7 +137,7 @@
                             <a href="{{ route('programs.edit', $program) }}" class="btn btn-sm btn-warning">
                                 <i class="fas fa-edit"></i> Edit
                             </a>
-                            <a href="{{ route('programs.registrations', $program) }}" class="btn btn-sm btn-primary">
+                            <a href="{{ route('programs.registrations.list', $program) }}" class="btn btn-sm btn-primary">
                                 <i class="fas fa-clipboard-list"></i> Peserta ({{ $program->registered_count }})
                             </a>
                             <form action="{{ route('programs.destroy', $program) }}" method="POST" class="d-inline">
