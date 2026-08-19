@@ -11,7 +11,8 @@ class StoreSocialProgramRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->hasPermissionTo('create_program');
+        // Authorization is handled in SocialProgramController
+        return true;
     }
 
     /**
@@ -24,8 +25,8 @@ class StoreSocialProgramRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'description' => 'required|string|min:20|max:3000',
-            'type' => 'required|in:pelatihan_kerja,pembagian_sembako',
-            'start_date' => 'required|date|after_or_equal:today',
+            'type' => 'required|in:pelatihan,pemberian_makanan,kesehatan,pendidikan,lainnya',
+            'start_date' => 'required|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'capacity' => 'required|integer|min:1|max:10000',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:3072',

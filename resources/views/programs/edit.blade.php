@@ -84,16 +84,16 @@
 
                     <hr>
 
-                    {{-- Activity Date --}}
+                    {{-- Start Date --}}
                     <div class="mb-3">
-                        <label for="activity_date" class="form-label">Tanggal Pelaksanaan <span class="text-danger">*</span></label>
+                        <label for="start_date" class="form-label">Tanggal Pelaksanaan <span class="text-danger">*</span></label>
                         <input type="date" 
-                               id="activity_date" 
-                               name="activity_date" 
-                               class="form-control @error('activity_date') is-invalid @enderror"
-                               value="{{ old('activity_date', $program->activity_date->format('Y-m-d')) }}"
+                               id="start_date" 
+                               name="start_date" 
+                               class="form-control @error('start_date') is-invalid @enderror"
+                               value="{{ old('start_date', $program->start_date ? $program->start_date->format('Y-m-d') : '') }}"
                                required>
-                        @error('activity_date')
+                        @error('start_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
