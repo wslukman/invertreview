@@ -8,12 +8,9 @@
         <h2><i class="fas fa-clipboard-list"></i> Peserta Program: {{ $program->title }}</h2>
     </div>
     <div class="col-md-4 text-end">
-        <form action="{{ route('programs.export', $program) }}" method="POST" class="d-inline">
-            @csrf
-            <button type="submit" class="btn btn-success">
-                <i class="fas fa-download"></i> Export CSV
-            </button>
-        </form>
+        <a href="{{ route('programs.registrations.export', $program) }}" class="btn btn-success">
+            <i class="fas fa-download"></i> Export CSV
+        </a>
     </div>
 </div>
 
@@ -29,7 +26,7 @@
                     </div>
                     <div class="col-md-3">
                         <p class="text-muted mb-1"><strong>Tanggal Pelaksanaan</strong></p>
-                        <p>{{ $program->activity_date->format('d M Y') }}</p>
+                        <p>{{ $program->start_date ? $program->start_date->format('d M Y') : '-' }}</p>
                     </div>
                     <div class="col-md-3">
                         <p class="text-muted mb-1"><strong>Kapasitas</strong></p>
@@ -57,7 +54,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <form method="GET" action="{{ route('programs.registrations', $program) }}" class="row g-2">
+                <form method="GET" action="{{ route('programs.registrations.list', $program) }}" class="row g-2">
                     <div class="col-md-4">
                         <select name="status" class="form-select">
                             <option value="">Semua Status</option>
@@ -150,7 +147,7 @@
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
                                     @if($registration->status === 'registered')
-                                        <form action="{{ route('registrations.attendance', $registration) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('programs.registrations.attend', $registration) }}" method="POST" class="d-inline">
                                             @csrf
                                             <button type="submit" class="btn btn-success" title="Mark as attended">
                                                 <i class="fas fa-check"></i>
@@ -159,7 +156,7 @@
                                     @endif
                                     
                                     @if($registration->status !== 'cancelled')
-                                        <form action="{{ route('registrations.destroy', $registration) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('programs.registrations.destroy', $registration) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger" title="Delete" onclick="return confirm('Hapus registrasi?')">

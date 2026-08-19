@@ -93,7 +93,13 @@ class ProgramRegistrationController extends Controller
             ->latest()
             ->paginate(20);
 
-        return view('programs.registrations', compact('program', 'registrations'));
+        $stats = [
+            'registered' => $program->registrations()->where('status', 'registered')->count(),
+            'attended' => $program->registrations()->where('status', 'attended')->count(),
+            'cancelled' => $program->registrations()->where('status', 'cancelled')->count(),
+        ];
+
+        return view('programs.registrations', compact('program', 'registrations', 'stats'));
     }
 
     /**
