@@ -11,8 +11,7 @@ class StoreActivityRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Gunakan permission yang sudah kita daftarkan di DatabaseSeeder
-        return auth()->check() && auth()->user()->hasPermissionTo('create_activity');
+        return true;
     }
 
     /**

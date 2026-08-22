@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Activity;
 use App\Models\Church;
+use App\Http\Requests\StoreActivityRequest;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
@@ -59,22 +60,11 @@ class ActivityController extends Controller
     /**
      * Simpan aktivitas ke database.
      */
-    public function store(Request $request)
+    public function store(StoreActivityRequest $request)
     {
-        // Validasi dasar
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required',
-            'location' => 'required',
-            'event_date' => 'required|date',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'type' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         // Logika penentuan Church ID
-        // 1. Dari input form (jika super admin milih)
-        // 2. Dari user profile (jika church admin)
-        // 3. Fallback ke gereja pertama jika user tidak punya church_id
         $churchId = $request->church_id 
                     ?? auth()->user()->church_id 
                     ?? Church::first()?->id;
@@ -93,11 +83,9 @@ class ActivityController extends Controller
             'church_id'     => $churchId,
             'user_id'       => auth()->id(),
             'title'         => $validated['title'],
-            'slug'          => Str::slug($validated['title']) . '-' . rand(1000, 9999),
-            'description'   => $validated['description'],
-            'location'      => $validated['location'] ?? 'Online',
-            'event_date'    => $validated['event_date'],
-            'type'          => $validated['type'] ?? 'umum',
+            'content'       => $validated['content'],
+            'activity_date' => $validated['activity_date'],
+            'type'          => $validated['type'],
             'image_path'    => $imagePath,
             'is_published'  => $request->has('is_published') ? $request->is_published : true,
         ]);
@@ -123,27 +111,20 @@ class ActivityController extends Controller
     /**
      * Update data.
      */
-    public function update(Request $request, Activity $activity)
+    public function update(StoreActivityRequest $request, Activity $activity)
     {
         if (!$this->canViewUnpublished($activity)) {
             abort(403);
         }
 
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required',
-            'location' => 'required',
-            'event_date' => 'required|date',
-            'type' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         $activity->update([
-            'title'       => $validated['title'],
-            'description' => $validated['description'],
-            'location'    => $validated['location'],
-            'event_date'  => $validated['event_date'],
-            'type'        => $validated['type'] ?? $activity->type,
-            'church_id'   => $request->church_id ?? $activity->church_id,
+            'title'         => $validated['title'],
+            'content'       => $validated['content'],
+            'activity_date' => $validated['activity_date'],
+            'type'          => $validated['type'],
+            'church_id'     => $request->church_id ?? $activity->church_id,
         ]);
 
         if ($request->hasFile('image')) {
