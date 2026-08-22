@@ -57,6 +57,33 @@
         padding: 80px 0;
         text-align: center;
     }
+    .social-links-section {
+        background-color: #f8f9fa;
+        padding: 60px 0;
+        text-align: center;
+    }
+    .social-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        margin: 0 10px;
+        font-size: 1.5rem;
+        color: white;
+        transition: transform 0.3s, box-shadow 0.3s;
+        text-decoration: none;
+    }
+    .social-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        color: white;
+    }
+    .btn-youtube { background-color: #FF0000; }
+    .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+    .btn-tiktok { background-color: #000000; }
+    .btn-blog { background-color: var(--secondary-color); }
 </style>
 @endsection
 
@@ -114,7 +141,29 @@
     </div>
 </div>
 
-<div class="cta-section mt-5">
+<div class="social-links-section mt-5">
+    <div class="container">
+        <h3 class="fw-bold mb-4">Terhubung dengan Admin & Kreator</h3>
+        <p class="text-muted mb-4">Ikuti perkembangan terbaru, update sistem, dan pelajari lebih lanjut melalui platform media sosial kami:</p>
+        <div class="d-flex justify-content-center flex-wrap">
+            <a href="#" target="_blank" class="social-btn btn-youtube" title="YouTube">
+                <i class="fab fa-youtube"></i>
+            </a>
+            <a href="#" target="_blank" class="social-btn btn-instagram" title="Instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" target="_blank" class="social-btn btn-tiktok" title="TikTok">
+                <i class="fab fa-tiktok"></i>
+            </a>
+            <a href="https://buku.invertreview.com" target="_blank" class="social-btn btn-blog" title="Blog / Buku Kehidupan">
+                <i class="fas fa-globe"></i>
+            </a>
+        </div>
+        <small class="d-block mt-4 text-muted"><em>*Tautan YouTube, Instagram, dan TikTok akan segera diperbarui</em></small>
+    </div>
+</div>
+
+<div class="cta-section">
     <div class="container">
         <h2 class="fw-bold mb-4">Mari Menjadi Bagian dari Sejarah Besar Ini</h2>
         <p class="mb-5 lead">Daftarkan komunitas Anda hari ini dan mulailah memetakan dampak Kerajaan Surga di wilayah Anda.</p>
