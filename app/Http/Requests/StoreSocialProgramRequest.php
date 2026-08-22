@@ -32,6 +32,7 @@ class StoreSocialProgramRequest extends FormRequest
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:3072',
             'contact_person' => 'required|string|max:255',
             'contact_phone' => ['required', 'string', 'regex:/^(\+62|0)[0-9]{9,12}$/'],
+            'status' => 'nullable|in:draft,active,completed,cancelled',
         ];
     }
 
