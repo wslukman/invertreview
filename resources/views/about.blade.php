@@ -66,14 +66,22 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 60px;
-        height: 60px;
+        width: 55px;
+        height: 55px;
         border-radius: 50%;
-        margin: 0 10px;
+        margin: 5px 10px;
         font-size: 1.5rem;
         color: white;
         transition: transform 0.3s, box-shadow 0.3s;
         text-decoration: none;
+    }
+    @media (max-width: 768px) {
+        .social-btn {
+            width: 45px;
+            height: 45px;
+            font-size: 1.2rem;
+            margin: 5px;
+        }
     }
     .social-btn:hover {
         transform: translateY(-5px);
