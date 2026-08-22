@@ -66,14 +66,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // --- PROGRAM REGISTRATIONS (Public Action for Authenticated) ---
     Route::delete('/registrations/{registration}', [ProgramRegistrationController::class, 'destroy'])->name('programs.registrations.destroy');
 
+    // --- ACTIVITY MANAGEMENT (All Authenticated Users) ---
+    Route::get('/manage-activities', [ActivityController::class, 'manage'])->name('activities.manage');
+    Route::get('/activities/create', [ActivityController::class, 'create'])->name('activities.create');
+    Route::post('/activities', [ActivityController::class, 'store'])->name('activities.store');
+    Route::get('/activities/{activity}/edit', [ActivityController::class, 'edit'])->name('activities.edit');
+    Route::put('/activities/{activity}', [ActivityController::class, 'update'])->name('activities.update');
+    Route::delete('/activities/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
+
     // --- MANAGEMENT (Church Admin & Super Admin) ---
     Route::middleware(['role:church_admin|super_admin'])->group(function () {
-        // Activity Management
-        Route::get('/activities/create', [ActivityController::class, 'create'])->name('activities.create');
-        Route::post('/activities', [ActivityController::class, 'store'])->name('activities.store');
-        Route::get('/activities/{activity}/edit', [ActivityController::class, 'edit'])->name('activities.edit');
-        Route::put('/activities/{activity}', [ActivityController::class, 'update'])->name('activities.update');
-        Route::delete('/activities/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
         
         // Social Program Management
         Route::get('/manage-programs', [SocialProgramController::class, 'index'])->name('programs.index');

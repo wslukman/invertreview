@@ -24,7 +24,7 @@
                 <a class="nav-link {{ Route::is('activities.create') ? 'active' : '' }}" href="{{ route('activities.create') }}">
                     <i class="fas fa-plus"></i> Buat Aktivitas
                 </a>
-                <a class="nav-link" href="{{ route('activities.index') }}">
+                <a class="nav-link {{ Route::is('activities.manage') ? 'active' : '' }}" href="{{ route('activities.manage') }}">
                     <i class="fas fa-list"></i> Daftar Aktivitas
                 </a>
 
@@ -60,7 +60,7 @@
                 <a class="nav-link {{ Route::is('activities.create') ? 'active' : '' }}" href="{{ route('activities.create') }}">
                     <i class="fas fa-plus"></i> Buat Aktivitas
                 </a>
-                <a class="nav-link" href="{{ route('activities.index') }}">
+                <a class="nav-link {{ Route::is('activities.manage') ? 'active' : '' }}" href="{{ route('activities.manage') }}">
                     <i class="fas fa-list"></i> Daftar Aktivitas
                 </a>
 
